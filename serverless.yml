@@ -11,15 +11,32 @@ provider:
   lambdaHashingVersion: 20201221
   region: eu-west-1
 
+resources:
+  Resources:
+    auctionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: auctionsTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
 functions:
-  hello:
-    handler: src/handlers/hello.handler
+  createAuction:
+    handler: src/handlers/createAuction.handler
     environment:
       ACCOUNT_ID: ${aws:accountId}
     events:
       - http:
-          method: GET
-          path: /hello
+          method: POST
+          path: /auction
 
 custom:
   bundle:
